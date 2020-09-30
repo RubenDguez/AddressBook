@@ -1,56 +1,63 @@
 <template>
   <v-app>
     <v-app-bar
-      app
-      color="primary"
+      absolute
+      color="rgba(55,100,186,1)"
       dark
+      shrink-on-scroll
+      prominent
+      src="@/imgs/nav-bar-main-pic.jpg"
+      fade-img-on-scroll
+      scroll-target="#scrolling-techniques-5"
+      scroll-threshold="500"
     >
-      <div class="d-flex align-center">
+      <template v-slot:img="{ props }">
         <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+          v-bind="props"
+          gradient="to top right, rgba(55,100,186,.7), rgba(25,32,72,.7)"
+        ></v-img>
+      </template>
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+      <v-app-bar-nav-icon></v-app-bar-nav-icon>
+
+      <v-toolbar-title>Address Book</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
+      <v-btn icon>
+        <v-icon>mdi-magnify</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-heart</v-icon>
+      </v-btn>
+
+      <v-btn icon>
+        <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </v-app-bar>
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
-  </v-app>
+    <v-sheet
+      id="scrolling-techniques-5"
+      class="overflow-y-auto"
+      max-height="700"
+    >
+      <div class="main-view">
+        <v-main>
+          <router-view></router-view>
+        </v-main>
+      </div>
+    </v-sheet>
+</v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    
   },
 
   data: () => ({
@@ -58,3 +65,16 @@ export default {
   }),
 };
 </script>
+
+<style>
+  .main-view {
+    margin-top: 200px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 700px;
+
+  }
+</style>
+
+
+// color="#43a047"
