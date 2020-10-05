@@ -7,7 +7,8 @@ from flask_cors import CORS
 
 app = flask.Flask(__name__)
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
-app.config["DEBUG"] = True
+
+app.config["DEBUG"] = False
 db_file = 'test.db'
 
 contacts = []
@@ -27,13 +28,56 @@ def get_all_contacts():
         conn = sqlite3.connect(db_file)
         conn.row_factory = dict_factory
         cur = conn.cursor()
-        all_contacts = cur.execute('SELECT * FROM contacts;').fetchall()
+        all_contacts = cur.execute(
+            'SELECT * FROM contacts WHERE contacts.ACTIVE = 1').fetchall()
 
         for c in all_contacts:
             contacts.append(c)
 
     except Error as e:
         print(e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@ app.route('/api/v1/resources/contacts/updateFavoriteContact/<id>', methods=['POST'])
+def updateFavoriteContact(id):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+        updateFavContact = cur.execute(
+            'UPDATE contacts set FAVORITE = NOT FAVORITE WHERE contacts.ID = ' + id + ';')
+        conn.commit()
+        get_all_contacts()
+        return jsonify(contacts)
+
+    except Error as e:
+        return jsonify(e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@ app.route('/api/v1/resources/contacts/deleteContact/<id>', methods=['POST'])
+def deleteContact(id):
+    conn = None
+    try:
+        conn = sqlite3.connect(db_file)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+        updateFavContact = cur.execute(
+            'UPDATE contacts set ACTIVE = NOT ACTIVE WHERE contacts.ID = ' + id + ';')
+        conn.commit()
+        get_all_contacts()
+        return jsonify(contacts)
+
+    except Error as e:
+        return jsonify(e)
 
     finally:
         if conn:
@@ -47,4 +91,4 @@ def api_all():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='192.168.1.6')

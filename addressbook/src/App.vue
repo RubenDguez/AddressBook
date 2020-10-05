@@ -20,7 +20,7 @@
 
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-      <v-toolbar-title>Address Book</v-toolbar-title>
+      <v-toolbar-title class="text-uppercase">Address Book</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
@@ -47,18 +47,38 @@
         </v-main>
       </div>
     </v-sheet>
-</v-app>
+    <v-footer absolute dark class="font-weight-medium" color="blue darken-2">
+      <v-row no-gutters>
+        <v-col class="text-center" cols="12" sm="6">
+          <p class="my-2">
+            {{ new Date().getFullYear() }} —
+            <strong>AddressBook</strong>
+          </p>
+        </v-col>
+        <v-col class="text-center" cols="12" sm="6">
+          <v-btn class="white--text" small text fab>
+            <v-icon>mdi-facebook</v-icon>
+          </v-btn>
+          <v-btn class="white--text" small text fab>
+            <v-icon>mdi-instagram</v-icon>
+          </v-btn>
+          <v-btn class="white--text" small text fab>
+            <v-icon>mdi-youtube</v-icon>
+          </v-btn>
+          <v-btn class="white--text" small text fab>
+            <v-icon>mdi-snapchat</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-
-
 export default {
-  name: 'App',
+  name: "App",
 
-  components: {
-    
-  },
+  components: {},
 
   data: () => ({
     //
@@ -67,14 +87,12 @@ export default {
 </script>
 
 <style>
-  .main-view {
-    margin-top: 200px;
-    margin-left: auto;
-    margin-right: auto;
-    max-width: 700px;
-
-  }
+.main-view {
+  margin-top: 200px;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 650px;
+}
 </style>
-
 
 // color="#43a047"
