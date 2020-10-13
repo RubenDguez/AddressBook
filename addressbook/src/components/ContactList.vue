@@ -11,7 +11,10 @@
         </v-col>
 
         <v-col class="text-right" align-self="end">
-          <AddEditContactForm v-bind:isNewContact="true"></AddEditContactForm>
+          <AddEditContactForm
+            v-bind:isNewContact="true"
+            v-on:createOrEditContact="createOrUpdateContact($event)"
+          ></AddEditContactForm>
         </v-col>
       </v-row>
     </v-container>
@@ -22,6 +25,7 @@
       v-bind:contact="c"
       v-on:UpdateFavoriteContact="updateFavoriteContact($event)"
       v-on:DeleteContact="deleteContact($event)"
+      v-on:createOrEditContact="createOrUpdateContact($event)"
     ></ContactListItem>
   </v-main>
 </template>
@@ -53,6 +57,18 @@ export default {
           id,
         {
           method: "POST",
+        }
+      )
+        .then((response) => response.json())
+        .then((contacts) => (this.contacts = contacts));
+    },
+    createOrUpdateContact: function(contact) {
+      fetch(
+        "http://192.168.1.6:5000/api/v1/resources/contacts/updateContact/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(contact),
         }
       )
         .then((response) => response.json())

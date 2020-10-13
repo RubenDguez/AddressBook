@@ -6,11 +6,11 @@
           <!-- <v-list-item-icon>
             <v-icon>mdi-account</v-icon>
           </v-list-item-icon> -->
-          <v-list-item-title>
+          <v-list-item-title class="text-uppercase">
             {{ contact.FIRST_NAME }}
             {{ contact.LAST_NAME }}
           </v-list-item-title>
-          <v-list-item-subtitle>
+          <v-list-item-subtitle class="text-uppercase">
             {{ contact.STREET_ADDRESS }}, {{ contact.CITY }}
             {{ contact.STATE }} {{ contact.ZIP }}
           </v-list-item-subtitle>
@@ -78,6 +78,7 @@
                 <AddEditContactForm
                   v-bind:isNewContact="false"
                   v-bind:contact="contact"
+                  v-on:createOrEditContact="createOrUpdateContact($event)"
                 ></AddEditContactForm>
 
                 <v-btn
@@ -154,6 +155,9 @@ export default {
     deleteContact: function() {
       this.$emit("DeleteContact", this.contact.ID);
       this.dialog = false;
+    },
+    createOrUpdateContact: function(contact) {
+      this.$emit("createOrEditContact", contact);
     },
   },
 };

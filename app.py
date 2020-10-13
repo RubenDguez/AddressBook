@@ -21,6 +21,18 @@ def dict_factory(cursor, row):
     return d
 
 
+def removeSpecialCharacters(text_string):
+    alphanumeric = ""
+
+    for char in text_string:
+        if char == '@' or char == '.' or char == '-' or char == ' ':
+            alphanumeric += char
+        elif char.isalnum():
+            alphanumeric += char
+
+    return alphanumeric
+
+
 def get_all_contacts():
     contacts.clear()
     conn = None
@@ -49,10 +61,107 @@ def updateFavoriteContact(id):
         conn = sqlite3.connect(db_file)
         conn.row_factory = dict_factory
         cur = conn.cursor()
-        updateFavContact = cur.execute(
+        update_Fav_Contact = cur.execute(
             'UPDATE contacts set FAVORITE = NOT FAVORITE WHERE contacts.ID = ' + id + ';')
         conn.commit()
         get_all_contacts()
+        return jsonify(contacts)
+
+    except Error as e:
+        return jsonify(e)
+
+    finally:
+        if conn:
+            conn.close()
+
+
+@ app.route('/api/v1/resources/contacts/updateContact/', methods=['POST'])
+def updateContact():
+    try:
+        data = request.get_json()
+        conn = None
+        sql_string = ""
+
+        id = 0
+        if "ID" in data:
+            id = data['ID']
+
+        if "FIRST_NAME" in data:
+            firstName = removeSpecialCharacters(data['FIRST_NAME'])
+        else:
+            return jsonify(contacts)
+
+        if "LAST_NAME" in data:
+            lastName = removeSpecialCharacters(data['LAST_NAME'])
+        else:
+            return jsonify(contacts)
+
+        if "WORK_PHONE" in data:
+            workPhone = removeSpecialCharacters(data['WORK_PHONE'])
+        else:
+            workPhone = ''
+
+        if "CELL_PHONE" in data:
+            cellPhone = removeSpecialCharacters(data['CELL_PHONE'])
+        else:
+            return jsonify(contacts)
+
+        if "EMAIL" in data:
+            email = removeSpecialCharacters(data['EMAIL'])
+        else:
+            email = ''
+
+        if "BIRTHDATE" in data:
+            birthdate = removeSpecialCharacters(data['BIRTHDATE'])
+        else:
+            birthdate = ''
+
+        if "STREET_ADDRESS" in data:
+            streetAddress = removeSpecialCharacters(data['STREET_ADDRESS'])
+        else:
+            streetAddress = ''
+
+        if "CITY" in data:
+            city = removeSpecialCharacters(data['CITY'])
+        else:
+            city = ''
+
+        if "STATE" in data:
+            state = removeSpecialCharacters(data['STATE'])
+        else:
+            state = ''
+
+        if "ZIP" in data:
+            zip = removeSpecialCharacters(data['ZIP'])
+        else:
+            zip = ''
+
+        if "NOTE" in data:
+            note = removeSpecialCharacters(data['NOTE'])
+        else:
+            note = ''
+
+        favorite = 0
+        active = 1
+
+        conn = sqlite3.connect(db_file)
+        conn.row_factory = dict_factory
+        cur = conn.cursor()
+
+        # NEW contact insert to database
+        if id == 0:
+            sql_string = 'INSERT INTO contacts (FIRST_NAME, LAST_NAME, WORK_PHONE, CELL_PHONE,EMAIL, BIRTHDATE, STREET_ADDRESS, CITY, STATE, ZIP, NOTE, FAVORITE, ACTIVE)  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);'
+            val = (firstName, lastName, workPhone, cellPhone, email, birthdate,
+                   streetAddress, city, state, zip, note, favorite, active)
+        else:
+            sql_string = 'UPDATE contacts SET FIRST_NAME = ?, LAST_NAME = ?, WORK_PHONE = ?, CELL_PHONE = ?, EMAIL = ?, BIRTHDATE = ?, STREET_ADDRESS = ?, CITY = ?, STATE = ?, ZIP = ?, NOTE = ?, FAVORITE = ?, ACTIVE = ? WHERE ID = ?;'
+            val = (firstName, lastName, workPhone, cellPhone, email, birthdate,
+                   streetAddress, city, state, zip, note, favorite, active, id)
+
+        create_update_Contact = cur.execute(sql_string, val)
+        conn.commit()
+        get_all_contacts()
+
         return jsonify(contacts)
 
     except Error as e:
@@ -70,7 +179,7 @@ def deleteContact(id):
         conn = sqlite3.connect(db_file)
         conn.row_factory = dict_factory
         cur = conn.cursor()
-        updateFavContact = cur.execute(
+        delete_contact = cur.execute(
             'UPDATE contacts set ACTIVE = NOT ACTIVE WHERE contacts.ID = ' + id + ';')
         conn.commit()
         get_all_contacts()
